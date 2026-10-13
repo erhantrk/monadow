@@ -1,0 +1,20 @@
+{
+  "MockUSD": "0xCC183F736cAfED29B054C094A238D20eA8dE3c19",
+  "Monadow": "0x4386667A6A31E2324AdBfA4CD80E1f1c6A626783",
+  "MonadowRegistry": "0x567FA1e916BE75A824CA7924377DfdE0c07150e5",
+  "deployBlock": 70789800,
+  "smokeTxs": {
+    "mintMockUsd100": "0x7ca895602940d9c633b254ed3c64f820262438ba97fb37f2373257834871ee1a",
+    "sendNative_failed_gasLimit300k_first": "0xe387894b09316f49ec2b250c24232c2320e334a5c2e5893b43ff51a5fa208773",
+    "sendNative": "0xaa60b2170495038583ad26592148860e3916568905792af17c48a25961e0257c",
+    "sendNative2": "0xd7a8b320efc2681b822818bb5a0cc22e409a4a169528b12d1af5598f079787d4",
+    "approveMockUsd": "0x3d181c780141009bdcbad0ee4d7a2020e7f22358958d87eeeb8fee00769849d1",
+    "sendToken": "0x652740c890685e57fb8d7dd9daa2de29f8c3b616b2ff48cd5e056c3224a6a57a"
+  },
+  "deployTxs": {
+    "Monadow": "0xb7cdda8a7dc812f4fa6ed67751d748dac820872836153982661229804a00f61a",
+    "MonadowRegistry": "0x50c62163b2190ec7c3b438da4b4d3514103321341e2cce54c8d1bbdafd4857ca",
+    "MockUSD": "0x9ca43a3ed14a10eb33f816cd691b5f73cb33c5dbb0ab1a84b230601ed5f8430a"
+  },
+  "verified": "sourcify exact_match (all 3)"
+}
