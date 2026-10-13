@@ -16,14 +16,14 @@ type Branch = {
  * "One passkey, many keys": the whole account layer drawn as a tree.
  * When unlocked, each leaf shows the live public value it produced.
  */
-export function HowItWorksDiagram({ compact = false }: { compact?: boolean }) {
+export function HowItWorksDiagram({ compact = false, scripted = false }: { compact?: boolean; scripted?: boolean }) {
   const keys = useSession((s) => s.keys);
 
   const branches: Branch[] = [
     {
       info: 'monadow/account/v1',
       title: 'Account key',
-      role: 'Your public Monad wallet. Wrapped in a Mera signing session → viem account, so txs sign prompt-free.',
+      role: 'Your public Monad wallet, as a Mera signing session → viem account.',
       icon: <Wallet className="size-4" />,
       live: keys ? truncate(keys.accountAddress, 8, 6) : null,
     },
@@ -37,14 +37,14 @@ export function HowItWorksDiagram({ compact = false }: { compact?: boolean }) {
     {
       info: 'monadow/stealth/view/v1',
       title: 'Stealth view key',
-      role: 'Scans on-chain announcements and spots payments meant for you — can’t move funds.',
+      role: 'Scans announcements for payments meant for you. Can’t move funds.',
       icon: <EyeIcon className="size-4" />,
       live: keys ? truncate(keys.viewingPublicKey, 8, 6) : null,
     },
     {
       info: 'monadow/vault/v1',
       title: 'Vault key',
-      role: 'AES-GCM key that seals your private payment notes. Only ciphertext touches localStorage (untrusted).',
+      role: 'AES-GCM key sealing your private notes. Only ciphertext is stored.',
       icon: <Lock className="size-4" />,
       live: keys ? 'AES-256 · in memory' : null,
     },
@@ -56,23 +56,27 @@ export function HowItWorksDiagram({ compact = false }: { compact?: boolean }) {
       <div className="flex flex-col items-center">
         <div className="flex w-full max-w-sm flex-col items-stretch gap-2">
           <RootCard
+            className="hiw-root"
             icon={<Fingerprint className="size-5" />}
             eyebrow="1 · Mera ceremony"
             title="One passkey"
             body="Face ID / Touch ID / security key. Never leaves your device."
           />
-          <div className="flex justify-center text-mon-400">
+          <div className="hiw-root flex justify-center text-mon-400">
             <ArrowDown className="size-5" />
           </div>
           <RootCard
+            className="hiw-root"
             icon={<Shield className="size-5" />}
             eyebrow="2 · WebAuthn PRF"
             title="32-byte root"
             body={
               <>
                 <span className="font-mono text-[11px] text-mon-300">prf(sha256("monadow.prf.root.v1"))</span>
-                <br />
-                deterministic per passkey, never stored.
+                <span className="hiw-hex mt-1 block break-all font-mono text-[10.5px] text-ink-400">
+                  9f3a0c7e51d28b4f6a1e93c05d7b28e4f1a6c39d08e72b5a4c1f96e3d0b78a25
+                </span>
+                Deterministic per passkey, never stored.
               </>
             }
             accent
@@ -81,12 +85,22 @@ export function HowItWorksDiagram({ compact = false }: { compact?: boolean }) {
 
         {/* Fan-out connector */}
         <div className="relative mt-1 hidden h-10 w-full lg:block" aria-hidden>
-          <div className="absolute left-1/2 top-0 h-5 w-px bg-mon-500/60" />
-          <div className="absolute left-1/2 top-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-mon-500/50 bg-ink-950 px-2.5 py-0.5 font-mono text-[10px] text-mon-300">HKDF-SHA256</div>
-          <div className="absolute left-[12.5%] right-[12.5%] top-5 h-px bg-mon-500/60" />
-          {[12.5, 37.5, 62.5, 87.5].map((x) => (
-            <div key={x} className="absolute top-5 h-5 w-px bg-mon-500/60" style={{ left: `${x}%` }} />
-          ))}
+          <svg className="absolute inset-0 size-full overflow-visible" viewBox="0 0 1000 40" preserveAspectRatio="none">
+            {[125, 375, 625, 875].map((x) => (
+              <path
+                key={x}
+                className="hiw-branch"
+                d={`M500 0 V20 H${x} V40`}
+                fill="none"
+                stroke="rgb(131 110 249 / 0.6)"
+                strokeWidth="1"
+                pathLength={1}
+                strokeDasharray="1"
+                strokeDashoffset="0"
+              />
+            ))}
+          </svg>
+          <div className="hiw-hkdf absolute left-1/2 top-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-mon-500/50 bg-ink-950 px-2.5 py-0.5 font-mono text-[10px] text-mon-300">HKDF-SHA256</div>
         </div>
         <div className="mt-2 flex items-center gap-2 lg:hidden" aria-hidden>
           <ArrowDown className="size-5 text-mon-400" />
@@ -98,8 +112,8 @@ export function HowItWorksDiagram({ compact = false }: { compact?: boolean }) {
         {branches.map((b, i) => (
           <div
             key={b.info}
-            className="animate-m-rise flex flex-col rounded-2xl border border-ink-700 bg-ink-850 p-4"
-            style={{ animationDelay: `${120 + i * 70}ms` }}
+            className={`hiw-leaf flex flex-col rounded-2xl border border-ink-700 bg-ink-850 p-4 ${scripted ? '' : 'animate-m-rise'}`}
+            style={scripted ? undefined : { animationDelay: `${120 + i * 70}ms` }}
           >
             <div className="flex items-center gap-2.5">
               <span className="flex size-8 items-center justify-center rounded-lg bg-mon-500/15 text-mon-300">
@@ -123,7 +137,7 @@ export function HowItWorksDiagram({ compact = false }: { compact?: boolean }) {
 
       {!compact && (
         <>
-          <div className="rounded-2xl border border-ink-700 bg-ink-900/60 p-4 sm:p-5">
+          <div className="hiw-step rounded-2xl border border-ink-700 bg-ink-900/60 p-4 sm:p-5">
             <div className="label-eyebrow mb-3">A private payment, end to end</div>
             <ol className="grid gap-3 sm:grid-cols-3">
               <Step icon={<Send className="size-4" />} n={1} title="Sender derives a one-time address">
@@ -139,12 +153,11 @@ export function HowItWorksDiagram({ compact = false }: { compact?: boolean }) {
               </Step>
             </ol>
           </div>
-          <div className="flex items-start gap-3 rounded-2xl border border-mon-500/30 bg-mon-500/5 p-4 text-[13px] leading-relaxed text-ink-200">
+          <div className="hiw-step flex items-start gap-3 rounded-2xl border border-mon-500/30 bg-mon-500/5 p-4 text-[13px] leading-relaxed text-ink-200">
             <RefreshCw className="mt-0.5 size-4 shrink-0 text-mon-300" />
             <div>
-              <span className="font-semibold text-ink-50">Stateless by design.</span> No key is ever saved — not
-              even encrypted. Refresh, switch devices (synced passkey), or clear storage: one passkey prompt
-              rebuilds every key, and the chain rebuilds your inbox.
+              <span className="font-semibold text-ink-50">Stateless by design.</span> No key is ever saved, not
+              even encrypted. One passkey prompt rebuilds every key; the chain rebuilds your inbox.
             </div>
           </div>
         </>
@@ -154,12 +167,14 @@ export function HowItWorksDiagram({ compact = false }: { compact?: boolean }) {
 }
 
 function RootCard({
+  className = '',
   icon,
   eyebrow,
   title,
   body,
   accent = false,
 }: {
+  className?: string;
   icon: ReactNode;
   eyebrow: string;
   title: string;
@@ -168,7 +183,7 @@ function RootCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-4 ${
+      className={`${className} rounded-2xl border p-4 ${
         accent ? 'border-mon-500/50 bg-mon-500/10' : 'border-ink-700 bg-ink-850'
       }`}
     >

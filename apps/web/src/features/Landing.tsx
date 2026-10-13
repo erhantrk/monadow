@@ -4,7 +4,7 @@ import { ArrowUpRight, Fingerprint, KeyRound, Plus } from 'lucide-react';
 import { MonadowMark } from '@/components/Logo';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Status';
-import { HowItWorksDiagram } from '@/components/HowItWorks';
+import { LandingStory } from './LandingStory';
 import {
   createNewPasskey,
   describePasskeyError,
@@ -15,7 +15,7 @@ import {
   type PasskeyErrorKind,
 } from '@/lib/passkey';
 import { useSession } from '@/store/session';
-import { LedgerDrift, Lens, Reveal, ScrambleText, ScrollCue, SplitRise, useScrolled } from '@/motion';
+import { LedgerDrift, Lens, ScrambleText, ScrollCue, SplitRise, useScrolled } from '@/motion';
 
 type Busy = null | 'get' | 'create';
 
@@ -90,6 +90,10 @@ export function Landing({ redirectTo = '/home' }: { redirectTo?: string }) {
           <div>
             <div className="animate-m-rise mb-5 inline-flex items-center gap-2 rounded-full border border-mon-500/40 bg-mon-500/10 px-3 py-1 text-[12px] text-mon-200">
               <span className="animate-m-pulse size-1.5 rounded-full bg-mon-400" /> Live on Monad testnet
+              <span className="text-mon-500/60">·</span>
+              <a href="https://mera.category.xyz" target="_blank" rel="noreferrer" className="font-semibold text-mon-100 hover:text-white">
+                Powered by Mera
+              </a>
             </div>
             <h1 className="font-display text-[40px] font-bold leading-[1.05] tracking-tight text-ink-50 sm:text-[56px]">
               <SplitRise text="Private payments." delay={120} stagger={28} />
@@ -165,22 +169,13 @@ export function Landing({ redirectTo = '/home' }: { redirectTo?: string }) {
           <ScrollCue className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 lg:flex" />
         </section>
 
-        <section className="pb-20">
-          <Reveal className="mb-6 text-center">
-            <div className="label-eyebrow">How it works</div>
-            <h2 className="font-display mt-2 text-2xl font-bold tracking-tight text-ink-50 sm:text-3xl">
-              One passkey, many keys
-            </h2>
-            <p className="mx-auto mt-2 max-w-lg text-[14px] leading-relaxed text-ink-400">
-              One WebAuthn PRF evaluation gives a 32-byte root. HKDF splits it into independent, purpose-bound
-              keys — each namespace can’t reveal another.
-            </p>
-          </Reveal>
-          <Reveal delay={120}>
-            <HowItWorksDiagram />
-          </Reveal>
-        </section>
       </div>
+
+      <LandingStory
+        onPasskey={() => void run('get')}
+        busy={busy === 'get'}
+        disabled={!available || busy !== null}
+      />
     </div>
   );
 }
