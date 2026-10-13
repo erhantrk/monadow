@@ -1,0 +1,86 @@
+{
+  "name": "monadow-sdk",
+  "version": "0.1.0",
+  "description": "Monadow — private stealth payments on Monad (ERC-5564 scheme 1 / ERC-6538) with passkey-derived keys (Mera)",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./mera": {
+      "import": {
+        "types": "./dist/mera.d.ts",
+        "default": "./dist/mera.js"
+      },
+      "require": {
+        "types": "./dist/mera.d.cts",
+        "default": "./dist/mera.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "monad",
+    "stealth",
+    "stealth-address",
+    "erc-5564",
+    "erc-6538",
+    "privacy",
+    "passkey",
+    "webauthn",
+    "prf",
+    "mera",
+    "viem"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "e2e": "tsx scripts/e2e.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@noble/curves": "^1.9.0",
+    "@noble/hashes": "^1.8.0",
+    "viem": "^2.28.0"
+  },
+  "peerDependencies": {
+    "@category-labs/mera": "^0.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@category-labs/mera": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@category-labs/mera": "^0.2.0",
+    "@scopelift/stealth-address-sdk": "^1.0.0-beta.5",
+    "@types/node": "^22.10.5",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
