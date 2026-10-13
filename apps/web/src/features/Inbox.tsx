@@ -235,7 +235,7 @@ function PaymentRow({ p, onDone }: { p: ReceivedPayment; onDone: () => void }) {
             </a>
             <CopyButton value={p.stealthAddress} />
             <span>block {p.blockNumber.toString()}</span>
-            {!isNative && <span>+{formatAmount(p.nativeBalance, 18)} MON gas</span>}
+            {!isNative && p.nativeBalance > 0n && <span>+{formatAmount(p.nativeBalance, 18)} MON gas</span>}
           </div>
         </div>
         {!claimed && w.s === 'idle' && (
