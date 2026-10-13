@@ -23,7 +23,7 @@ Measured from opening the landing page to the first confirmed on-chain transacti
 2. **Fund**: get MON from https://faucet.monad.xyz (the only step outside the app).
 3. **Mint 100 mUSD** or **Publish meta-address on-chain**: one click, no prompt, confirmed in about a second on Monad's 400 ms blocks.
 
-So it takes one passkey prompt and one click, and the only wait is the faucet. <!-- VERIFY: measured wall-clock time-to-first-tx on the live app, if you want to quote a number -->
+So it takes one passkey prompt and one click, and the only wait is the faucet.
 
 ### Session design
 
@@ -70,4 +70,4 @@ The PRF root is zeroed right after derivation. Keys live only in memory for the 
 
 ### Cross-device test
 
-The same synced passkey (iCloud Keychain, Google Password Manager, 1Password) on another device or a fresh profile gives byte-identical keys, so it shows the same account address and meta-address, and the scan finds the same payments, ready to withdraw. The vault key is identical too, so any copy of a note's ciphertext decrypts on the new device. In the current build that ciphertext is not synced: it stays in the `localStorage` of the browser that wrote it, so notes appear on another device only if the ciphertext is carried over, and clearing site data deletes them. <!-- VERIFY: the form text claims "the same decrypted notes" cross-device; that is only true if note ciphertext is synced or exported, which apps/web/src/lib/vault.ts does not do -->
+The same synced passkey (iCloud Keychain, Google Password Manager, 1Password) on another device or a fresh profile gives byte-identical keys, so it shows the same account address and meta-address, and the scan finds the same payments, ready to withdraw. The vault key is identical too, so any copy of a note's ciphertext decrypts on the new device. In the current build that ciphertext is not synced: it stays in the `localStorage` of the browser that wrote it, so notes appear on another device only if the ciphertext is carried over, and clearing site data deletes them.
