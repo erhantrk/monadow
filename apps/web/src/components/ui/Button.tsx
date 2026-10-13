@@ -6,7 +6,7 @@ type Size = 'sm' | 'md' | 'lg';
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    'bg-mon-500 text-white font-semibold shadow-[0_8px_24px_-10px_rgb(131_110_249/0.8)] hover:bg-mon-400 active:bg-mon-600 disabled:bg-ink-700 disabled:text-ink-400 disabled:shadow-none',
+    'm-shine bg-mon-500 text-white font-semibold shadow-[0_8px_24px_-10px_rgb(131_110_249/0.8)] hover:bg-mon-400 active:bg-mon-600 disabled:bg-ink-700 disabled:text-ink-400 disabled:shadow-none',
   secondary:
     'border border-ink-600 bg-ink-900/40 text-ink-100 hover:border-mon-500/60 hover:bg-ink-800 disabled:text-ink-500 disabled:hover:border-ink-600 disabled:hover:bg-transparent',
   ghost:
@@ -44,7 +44,7 @@ export function Button({
       {...rest}
       type={type}
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors disabled:cursor-not-allowed ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
+      className={`m-press inline-flex items-center justify-center gap-2 whitespace-nowrap disabled:cursor-not-allowed ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
     >
       {loading ? <Loader2 className="size-4 animate-spin" /> : icon}
       {children}
@@ -73,7 +73,7 @@ export function LinkButton({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className={`inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
+      className={`m-press inline-flex items-center justify-center gap-2 whitespace-nowrap ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
     >
       {icon}
       {children}

@@ -271,3 +271,407 @@
     opacity: 0;
   }
 }
+
+/* ————————————————————————————————————————————————————————————————
+ * Motion system — adapted from the Shade website (stellarshade-labs/Web):
+ * the landing "film" (ledger drift, wordmark rise, lens, scroll cue,
+ * severance burst, view-key sweep, reveals) and the app keyframes, re-skinned
+ * from copper-on-graphite to Monad purple on aubergine. Components live in
+ * src/motion/. Everything below collapses under prefers-reduced-motion.
+ * ———————————————————————————————————————————————————————————————— */
+
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Route transition: rise + un-blur (the hero's "power4.out" feel). */
+@keyframes m-page {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+.animate-m-page {
+  animation: m-page 0.5s var(--ease-out-expo) both;
+}
+
+/* Staggered children: each direct child rises after the previous one. */
+.m-stagger > * {
+  animation: m-rise 0.5s var(--ease-out-quart) both;
+}
+.m-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.m-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.m-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.m-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.m-stagger > *:nth-child(n + 6) { animation-delay: 300ms; }
+
+/* Reveal on scroll (Shade `.rev`). */
+.m-rev {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.55s var(--ease-out-quart),
+    transform 0.55s var(--ease-out-quart);
+}
+.m-rev.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Fade that waits a beat so debounced lookups don't flicker. */
+.animate-m-fade-delayed {
+  animation: m-fade 0.25s ease-out 0.18s both;
+}
+
+/* Logo mark breathing (Shade hero mark: opacity yoyo 1.6s sine). */
+@keyframes m-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.animate-m-breathe {
+  animation: m-breathe 3.2s ease-in-out infinite;
+}
+
+/* Slow orbit for the hero rings. */
+@keyframes m-spin {
+  to { transform: rotate(360deg); }
+}
+.animate-m-orbit {
+  animation: m-spin 60s linear infinite;
+}
+.animate-m-orbit-rev {
+  animation: m-spin 90s linear infinite reverse;
+}
+@keyframes m-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-m-float {
+  animation: m-float 6s ease-in-out infinite;
+}
+
+/* Hero wordmark: characters rise out of a clipped line. */
+.m-split {
+  display: inline;
+}
+.m-split-word {
+  display: inline-flex;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+  white-space: nowrap;
+}
+.m-split-ch {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: m-split-in 1.05s var(--ease-out-expo) var(--d, 0ms) forwards;
+}
+@keyframes m-split-in {
+  to { transform: translateY(0); }
+}
+
+/* Ambient ledger columns (Shade hero tickers). */
+.m-ledger-col {
+  position: absolute;
+  top: -6%;
+  width: max-content;
+  will-change: transform;
+  animation: m-ledger 50s linear infinite;
+}
+@keyframes m-ledger {
+  to { transform: translateY(-50%); }
+}
+.m-ledger-c1 { left: clamp(8px, 3vw, 56px); opacity: 0.2; }
+.m-ledger-c2 { left: 50%; margin-left: -12rem; opacity: 0.07; }
+.m-ledger-c3 { right: clamp(8px, 3vw, 56px); opacity: 0.22; }
+.m-ledger-row {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 2.5;
+  white-space: nowrap;
+  color: var(--color-ink-500);
+}
+.m-ledger-row b {
+  color: var(--color-ink-400);
+  font-weight: 500;
+}
+.m-ledger-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--color-ink-950) 0%, transparent 22%, transparent 66%, var(--color-ink-950) 100%);
+}
+@media (max-width: 760px) {
+  .m-ledger-c2,
+  .m-ledger-c3 { display: none; }
+  .m-ledger-c1 { opacity: 0.12; }
+}
+
+/* Film lens: vignette + grain. */
+.m-lens {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  overflow: hidden;
+}
+.m-lens-vig {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 45%, transparent 55%, rgb(0 0 0 / 0.38) 100%);
+}
+.m-lens-grain {
+  position: absolute;
+  inset: -50%;
+  opacity: 0.045;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="240" height="240" filter="url(%23n)" opacity="0.6"/></svg>');
+}
+
+/* Scroll cue. */
+.m-cue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.m-cue span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--color-ink-500);
+}
+.m-cue i {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 44px;
+  overflow: hidden;
+  background: var(--color-ink-600);
+}
+.m-cue i::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -50%;
+  width: 100%;
+  height: 50%;
+  background: var(--color-mon-500);
+  animation: m-cuedrop 1.8s ease-in-out infinite;
+}
+@keyframes m-cuedrop {
+  0% { top: -50%; }
+  70%, 100% { top: 100%; }
+}
+@media (max-height: 640px) {
+  .m-cue { display: none; }
+}
+
+/* Micro-interactions: press-down for buttons, lift + glow for interactive cards. */
+.m-press {
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-duration: 160ms;
+  transition-timing-function: var(--ease-out-quart);
+}
+.m-press:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.m-lift {
+  transition:
+    transform 0.25s var(--ease-out-quart),
+    border-color 0.25s,
+    box-shadow 0.25s;
+}
+@media (hover: hover) {
+  .m-lift:hover {
+    transform: translateY(-2px);
+    border-color: rgb(131 110 249 / 0.45);
+    box-shadow: 0 14px 40px -24px rgb(131 110 249 / 0.7);
+  }
+}
+
+/* Primary button sheen on hover. */
+.m-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.m-shine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateX(-120%) skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.22), transparent);
+  transition: transform 0.7s var(--ease-out-quart);
+}
+@media (hover: hover) {
+  .m-shine:hover:not(:disabled)::before {
+    transform: translateX(120%) skewX(-18deg);
+  }
+}
+
+/* View-key scan sweep (Shade view-key chapter). */
+.m-scan {
+  position: relative;
+  overflow: hidden;
+  padding: 22px 20px 18px;
+}
+.m-scan-grid {
+  display: grid;
+  gap: clamp(8px, 1.6vw, 14px);
+  max-width: 560px;
+  margin: 0 auto;
+}
+.m-scan-sq {
+  position: relative;
+  aspect-ratio: 1;
+  border: 1.5px solid var(--color-ink-600);
+  border-radius: 6px;
+  animation: m-scan-flick var(--p) linear var(--d) infinite;
+}
+.m-scan-sq i {
+  position: absolute;
+  inset: 4px;
+  border-radius: 3px;
+  background: var(--color-mon-500);
+  box-shadow: 0 0 18px rgb(131 110 249 / 0.6);
+  transform: scale(0);
+  animation: m-scan-hit var(--p) var(--ease-out-quart) var(--d) infinite;
+}
+@keyframes m-scan-flick {
+  0% { border-color: var(--color-mon-400); }
+  12%, 100% { border-color: var(--color-ink-600); }
+}
+@keyframes m-scan-hit {
+  0%, 4% { transform: scale(0); }
+  14%, 70% { transform: scale(1); }
+  90%, 100% { transform: scale(0); }
+}
+.m-scan-band {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: -18%;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, rgb(131 110 249 / 0.16), transparent);
+  transform: skewX(-12deg);
+  will-change: transform;
+  animation: m-scan-band var(--p) linear infinite;
+  pointer-events: none;
+}
+@keyframes m-scan-band {
+  from { transform: translateX(0) skewX(-12deg); }
+  80%, to { transform: translateX(660%) skewX(-12deg); }
+}
+.m-scan-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-mon-300);
+}
+.m-scan-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-mon-400);
+  animation: m-pulse 1.2s ease-in-out infinite;
+}
+
+/* Severance burst (send success). */
+.m-burst {
+  position: relative;
+}
+.m-burst-origin {
+  position: absolute;
+  left: 50%;
+  top: 1px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.m-burst-origin i {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  background: var(--color-mon-400);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: m-frag 1.1s cubic-bezier(0.2, 0.7, 0.3, 1) 0.95s both;
+}
+.m-burst-origin i.is-round {
+  border-radius: 999px;
+  background: var(--color-mon-200);
+}
+@keyframes m-frag {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(var(--s));
+  }
+}
+/* Success check: ring pops, then glow ripples once. */
+@keyframes m-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.animate-m-pop {
+  animation: m-pop 0.55s var(--ease-out-quart) 0.9s both;
+}
+@keyframes m-ripple {
+  from { box-shadow: 0 0 0 0 rgb(95 211 160 / 0.45); }
+  to { box-shadow: 0 0 0 18px rgb(95 211 160 / 0); }
+}
+.animate-m-ripple {
+  animation:
+    m-pop 0.55s var(--ease-out-quart) 0.9s both,
+    m-ripple 1.2s ease-out 1.2s 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-m-page,
+  .m-stagger > *,
+  .animate-m-fade-delayed,
+  .animate-m-breathe,
+  .animate-m-orbit,
+  .animate-m-orbit-rev,
+  .animate-m-float,
+  .animate-m-pop,
+  .animate-m-ripple,
+  .m-split-ch,
+  .m-ledger-col,
+  .m-cue i::after,
+  .m-scan-sq,
+  .m-scan-sq i,
+  .m-scan-band,
+  .m-scan-dot,
+  .animate-m-sheen::after {
+    animation: none !important;
+  }
+  .m-split-ch { transform: none; }
+  .m-scan-sq i { transform: scale(1); }
+  .m-scan-band,
+  .m-burst-origin { display: none; }
+  .m-rev { opacity: 1; transform: none; transition: none; }
+  .m-press:active:not(:disabled),
+  .m-lift:hover { transform: none; }
+  .m-shine::before { display: none; }
+}

@@ -9,6 +9,7 @@ import { Field } from '@/components/ui/Field';
 import { CopyButton } from '@/components/ui/CopyField';
 import { EmptyState, Notice, Skeleton, TxResult, type TxStatus } from '@/components/ui/Status';
 import { useSession } from '@/store/session';
+import { ScanSweep, useLinger } from '@/motion';
 import { deployment, publicClient } from '@/lib/chain';
 import { assetForToken } from '@/lib/tokens';
 import { stealthSigner } from '@/lib/passkey';
@@ -22,6 +23,7 @@ export function InboxPage() {
   const setScan = useSession((s) => s.setScan);
   const [scanning, setScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const sweep = useLinger(scanning, 1600);
 
   const runScan = useCallback(async () => {
     if (!deployment) return;
@@ -55,7 +57,7 @@ export function InboxPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="m-stagger space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="label-eyebrow">Inbox</div>
@@ -112,9 +114,10 @@ export function InboxPage() {
       {error && <Notice tone="bad">Scan failed: {error}</Notice>}
 
       <Panel eyebrow="Received" title="Stealth payments" bodyClassName="p-0">
+        {sweep && <ScanSweep className={scan ? 'border-b border-ink-700 !py-4' : ''} rows={scan ? 2 : 3} />}
         {!scan && scanning ? (
-          <div className="space-y-3 p-5">
-            {[0, 1, 2].map((i) => (
+          <div className="space-y-3 px-5 pb-5">
+            {[0, 1].map((i) => (
               <Skeleton key={i} className="h-16 w-full" />
             ))}
           </div>
@@ -142,7 +145,7 @@ export function InboxPage() {
 
 function Stat({ icon, label, value, sub }: { icon: ReactNode; label: string; value: string | null; sub?: string }) {
   return (
-    <div className="min-w-0 rounded-2xl border border-ink-700 bg-ink-850/80 px-3 py-3 sm:px-4 sm:py-3.5">
+    <div className="m-lift min-w-0 rounded-2xl border border-ink-700 bg-ink-850/80 px-3 py-3 sm:px-4 sm:py-3.5">
       <div className="label-eyebrow flex items-center gap-1.5 max-sm:!text-[9px] max-sm:!tracking-wider">
         <span className="text-mon-400 max-sm:hidden">{icon}</span>
         {label}

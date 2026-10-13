@@ -17,10 +17,11 @@ import { CopyButton, CopyField } from '@/components/ui/CopyField';
 import { QRCode } from '@/components/ui/QRCode';
 import { Notice, Skeleton, StatusDot, TxResult, type TxStatus } from '@/components/ui/Status';
 import { useSession } from '@/store/session';
+import { CountUp } from '@/motion';
 import { useBalances } from '@/lib/useBalances';
 import { chain, deployment, publicClient } from '@/lib/chain';
 import { ASSETS } from '@/lib/tokens';
-import { errorMessage, explorerAddress, FAUCET, formatAmount, truncate, truncateMeta } from '@/lib/format';
+import { errorMessage, explorerAddress, FAUCET, truncate, truncateMeta } from '@/lib/format';
 
 const MINT_AMOUNT = 100_000_000n; // 100 mUSD (6 dp)
 
@@ -47,7 +48,7 @@ export function HomePage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="m-stagger space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="label-eyebrow">Your account</div>
@@ -173,7 +174,7 @@ function BalanceTile({
   disabled?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-ink-700 bg-ink-900 px-4 py-3.5">
+    <div className="m-lift rounded-xl border border-ink-700 bg-ink-900 px-4 py-3.5">
       <div className="label-eyebrow">{symbol}</div>
       <div className="mt-1.5 flex items-baseline gap-1.5">
         {disabled ? (
@@ -182,7 +183,7 @@ function BalanceTile({
           <Skeleton className="h-8 w-24" />
         ) : (
           <span className="font-display truncate text-2xl font-semibold tabular-nums text-ink-50 sm:text-[28px]">
-            {formatAmount(value, decimals)}
+            <CountUp value={value} decimals={decimals} />
           </span>
         )}
       </div>

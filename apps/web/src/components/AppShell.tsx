@@ -64,7 +64,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <main
         key={location.pathname}
-        className="animate-m-rise relative z-10 mx-auto w-full max-w-[1080px] px-4 pb-28 pt-6 sm:px-6 sm:pt-8 md:pb-12"
+        className="animate-m-page relative z-10 mx-auto w-full max-w-[1080px] px-4 pb-28 pt-6 sm:px-6 sm:pt-8 md:pb-12"
       >
         {children}
       </main>

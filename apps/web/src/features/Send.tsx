@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/ui/Field';
 import { CopyButton } from '@/components/ui/CopyField';
 import { Notice } from '@/components/ui/Status';
+import { ScrambleText, SeverBurst } from '@/motion';
 import { useSession } from '@/store/session';
 import { useBalances } from '@/lib/useBalances';
 import { deployment, publicClient } from '@/lib/chain';
@@ -284,14 +285,11 @@ export function SendPage() {
 
 function SentCard({ sent, onReset }: { sent: Sent; onReset: () => void }) {
   return (
-    <div className="mx-auto max-w-xl">
+    <div className="animate-m-page mx-auto max-w-xl">
       <Panel bodyClassName="p-6 sm:p-7">
-        <div className="sever-line" aria-hidden>
-          <span />
-          <span />
-        </div>
+        <SeverBurst />
         <div className="flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-full bg-signal-ok/15 text-signal-ok">
+          <span className="animate-m-ripple flex size-10 items-center justify-center rounded-full bg-signal-ok/15 text-signal-ok">
             <CheckCircle2 className="size-5" />
           </span>
           <div>
@@ -320,7 +318,7 @@ function SentCard({ sent, onReset }: { sent: Sent; onReset: () => void }) {
                 rel="noreferrer"
                 className="min-w-0 truncate font-mono text-[12.5px] text-mon-200 hover:underline"
               >
-                {sent.stealthAddress}
+                <ScrambleText text={sent.stealthAddress} delay={700} frames={18} />
               </a>
               <CopyButton value={sent.stealthAddress} />
             </div>
