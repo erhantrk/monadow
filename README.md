@@ -4,7 +4,7 @@
 
 - Live app: https://erhantrk.github.io/monadow/
 - SDK on npm: [`monadow-sdk`](https://www.npmjs.com/package/monadow-sdk)
-- Demo video: TBD
+- Demo video: https://youtu.be/jkc8Qs6ovJs
 - Network: Monad testnet (chainId 10143)
 - Built for the Monad Metropolis hackathon (solo: Erhan Türker)
 
