@@ -1,0 +1,349 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Monadow pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=block" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+:root{--bg:#0E0B16;--mon:#836EF9;--mon2:#A898FF;--mon3:#C9BFFF;--ink:#F4F1FF;--mute:#9C95BA;--bad:#FF7A9A;--ok:#5EE6A8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
+#bg{position:absolute;inset:0;width:1920px;height:1080px}
+.layer{position:absolute;inset:0;visibility:hidden;opacity:0}
+.abs{position:absolute}
+.center{left:0;right:0;text-align:center}
+.display{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-0.035em;line-height:1.02}
+.mono{font-family:'JetBrains Mono',monospace}
+.acc{background:linear-gradient(100deg,#D9D1FF 0%,#A898FF 40%,#836EF9 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 26px rgba(131,110,249,.45))}
+.kline{position:absolute;left:0;right:0;text-align:center;font-family:'Space Grotesk';font-weight:700;letter-spacing:-0.04em;line-height:1.05;color:#F7F5FF;visibility:hidden}
+.kline .w{display:inline-block;white-space:pre}
+.ksub{position:absolute;left:0;right:0;text-align:center;font:500 34px Inter;color:var(--mute);letter-spacing:-0.005em;visibility:hidden}
+.card{background:linear-gradient(180deg,rgba(34,27,56,.86),rgba(20,16,34,.86));border:1.5px solid rgba(131,110,249,.38);border-radius:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 24px 70px rgba(0,0,0,.5),0 0 44px rgba(131,110,249,.14)}
+
+/* problem */
+.addr{position:absolute;left:50%;top:500px;transform:translate(-50%,-50%);padding:26px 44px;border-radius:22px;font:600 52px 'JetBrains Mono';color:#fff;background:rgba(24,19,40,.95);border:2px solid var(--mon);box-shadow:0 0 50px rgba(131,110,249,.45);white-space:nowrap;text-align:left}
+.addr small{display:block;font:600 18px 'JetBrains Mono';letter-spacing:.2em;color:var(--mute);margin-bottom:6px;text-transform:uppercase}
+.tx{position:absolute;width:450px;white-space:nowrap;gap:16px;padding:14px 20px;border-radius:14px;background:rgba(28,21,44,.92);border:1.5px solid rgba(255,122,154,.45);font:500 19px 'JetBrains Mono';color:#EDE8FF;display:flex;justify-content:space-between;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.tx b{color:var(--bad);font-weight:600}
+.tx i{font-style:normal;color:var(--mute)}
+.stat{position:absolute;top:800px;width:440px;padding:18px 26px;border-radius:18px;background:rgba(40,16,30,.88);border:1.5px solid rgba(255,122,154,.6);box-shadow:0 0 40px rgba(255,122,154,.18)}
+.stat .l{font:600 18px 'JetBrains Mono';letter-spacing:.18em;color:var(--bad)}
+.stat .v{font:700 40px 'Space Grotesk';margin-top:4px}
+
+/* passkey */
+.pk{position:absolute;left:760px;top:250px;width:400px;height:400px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(131,110,249,.30),rgba(131,110,249,.05) 62%,transparent 70%)}
+.ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(131,110,249,.6)}
+.strike{position:absolute;height:6px;background:var(--bad);border-radius:3px;transform-origin:left center;box-shadow:0 0 18px rgba(255,122,154,.6)}
+
+/* how */
+.node{position:absolute;transform:translate(-50%,-50%);padding:18px 26px;border-radius:18px;text-align:center;white-space:nowrap}
+.node .t{font:700 32px 'Space Grotesk'}
+.node .s{font:500 20px 'JetBrains Mono';color:var(--mute);margin-top:4px}
+.node.key{width:430px;text-align:left;display:flex;align-items:center;gap:18px;padding:16px 24px}
+.node.key .ic{width:16px;height:16px;border-radius:4px;background:var(--mon);box-shadow:0 0 14px var(--mon);flex:none}
+.node.key .t{font-size:28px}
+.node.key .s{font-size:18px;margin-top:2px}
+#wires path{fill:none;stroke:rgba(168,152,255,.75);stroke-width:3;stroke-linecap:round}
+#wires circle{fill:#E4DEFF;filter:drop-shadow(0 0 6px #A898FF)}
+
+/* device */
+#dev{position:absolute;left:280px;top:236px;width:1360px;transform-origin:50% 0%}
+.screen{position:relative;width:1360px;height:777px;border-radius:26px;background:#05040A;padding:14px;border:1.5px solid rgba(201,191,255,.22);box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 120px rgba(131,110,249,.28)}
+.vp{position:relative;width:1332px;height:749px;border-radius:12px;overflow:hidden;background:#0E0B16}
+.shot{position:absolute;inset:0;opacity:0}
+.shot img{width:100%;height:100%;display:block}
+.base{height:26px;width:1560px;margin-left:-100px;border-radius:0 0 18px 18px;background:linear-gradient(180deg,#3A3450,#1B1726 60%,#121019);box-shadow:0 30px 60px rgba(0,0,0,.6)}
+.base:before{content:'';display:block;margin:0 auto;width:220px;height:9px;border-radius:0 0 10px 10px;background:#0E0B16}
+.glare{position:absolute;inset:14px;border-radius:12px;background:linear-gradient(115deg,rgba(255,255,255,.06),transparent 35%);pointer-events:none}
+
+/* monad cards */
+.mcard{position:absolute;top:330px;width:520px;height:460px;padding:44px 40px}
+.mcard .big{font:700 104px 'Space Grotesk';letter-spacing:-.03em;color:#fff}
+.mcard .lbl{font:600 30px Inter;color:var(--mon3);margin-top:8px;line-height:1.3}
+.mcard .sub{font:400 25px Inter;color:var(--mute);margin-top:12px;line-height:1.4}
+.blocks{position:absolute;left:40px;right:40px;bottom:46px;height:64px;overflow:hidden}
+.blk{position:absolute;top:6px;width:52px;height:52px;border-radius:10px;border:2px solid rgba(131,110,249,.6);background:rgba(131,110,249,.12)}
+.dots{position:absolute;left:40px;bottom:40px;display:grid;grid-template-columns:repeat(10,1fr);gap:12px;width:440px}
+.dots i{display:block;height:30px;border-radius:7px;background:rgba(131,110,249,.12);border:1.5px solid rgba(131,110,249,.3)}
+.erc{display:inline-block;margin:24px 14px 0 0;padding:12px 20px;border-radius:12px;font:600 28px 'JetBrains Mono';background:rgba(131,110,249,.14);border:1.5px solid rgba(131,110,249,.5);color:var(--mon3)}
+
+/* traction */
+.tchip{position:absolute;top:520px;width:500px;height:230px;padding:36px 38px}
+.tchip .l{font:600 18px 'JetBrains Mono';letter-spacing:.2em;color:var(--ok)}
+.tchip .v{font:700 44px 'Space Grotesk';margin-top:16px;letter-spacing:-.02em}
+.tchip .s{font:500 26px 'JetBrains Mono';color:var(--mon3);margin-top:12px}
+/* roadmap */
+.rail{position:absolute;left:240px;right:240px;top:560px;height:4px;border-radius:2px;background:rgba(131,110,249,.2)}
+.railfill{position:absolute;left:0;top:0;bottom:0;right:0;border-radius:2px;background:linear-gradient(90deg,#836EF9,#C9BFFF);box-shadow:0 0 18px #836EF9;transform-origin:left center}
+.rnode{position:absolute;top:562px;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:#0E0B16;border:3px solid var(--mon2);box-shadow:0 0 20px rgba(131,110,249,.7)}
+.rlbl{position:absolute;top:610px;width:380px;margin-left:-190px;text-align:center}
+.rlbl .t{font:700 36px 'Space Grotesk';letter-spacing:-.02em}
+.rlbl .s{font:500 22px Inter;color:var(--mute);margin-top:8px}
+.rlbl .n{font:600 18px 'JetBrains Mono';color:var(--mon2);letter-spacing:.2em;margin-bottom:10px}
+
+/* cta */
+.links{position:absolute;left:50%;top:700px;transform:translateX(-50%);padding:26px 44px;display:flex;flex-direction:column;gap:14px}
+.links div{font:600 36px 'JetBrains Mono';color:#fff;display:flex;gap:22px;align-items:center;white-space:nowrap}
+.links span{font:600 18px Inter;letter-spacing:.18em;color:var(--mon2);width:110px}
+.badge{display:inline-flex;align-items:center;gap:12px;padding:10px 22px;border-radius:999px;border:1.5px solid rgba(94,230,168,.55);background:rgba(94,230,168,.08);font:600 24px Inter;color:var(--ok)}
+.badge i{width:11px;height:11px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(5,3,10,.6) 100%);pointer-events:none;z-index:40}
+#fade{position:absolute;inset:0;background:#000;z-index:60;opacity:1}
+</style>
+</head>
+<body>
+<canvas id="bg" width="1920" height="1080"></canvas>
+<div id="stage"></div>
+<div id="vig"></div>
+<div id="fade"></div>
+<script>
+const TL = window.__TL || { images: {}, real: {} };
+const W = 1920, H = 1080;
+const B = 2.4;                // one bar at 100 bpm
+// bars -> seconds. Bars < 4: intro. Bars >= 27.5: closing scenes, placed after the recorded story + app clips (POST0).
+let POST0 = 0;
+const b = (x) => (x >= 27.4 ? (x - 27.5) * B + POST0 : x * B);
+let uid = 0;
+function mark(size, eclId) {
+  const id = 'mk' + (uid++);
+  return `<svg viewBox="0 0 32 32" width="${size}" height="${size}" style="overflow:visible;filter:drop-shadow(0 0 18px rgba(131,110,249,.6))">
+  <path d="M16 3.2 27.1 9.6v12.8L16 28.8 4.9 22.4V9.6Z" fill="none" stroke="#836EF9" stroke-width="2" stroke-linejoin="round"/>
+  <mask id="${id}"><rect x="-4" y="-4" width="40" height="40" fill="#fff"/><circle ${eclId ? `id="${eclId}"` : ''} cx="19.4" cy="13.4" r="5.7" fill="#000"/></mask>
+  <circle cx="16" cy="16" r="6.8" fill="#836EF9" mask="url(#${id})"/></svg>`;
+}
+const stage = document.getElementById('stage');
+const $ = (q, r = document) => r.querySelector(q);
+const $$ = (q, r = document) => [...r.querySelectorAll(q)];
+const tl = gsap.timeline({ paused: true });
+const E = 'expo.out';
+const MARKS = { scenes: [] };   // scene boundaries (seconds), exported for the soundtrack
+
+// A layer = absolutely positioned group shown between t0 and t1 (bars), fades in/out.
+function layer(t0, t1, html, { fadeIn = .4, fadeOut = .45 } = {}) {
+  const el = document.createElement('div'); el.className = 'layer'; el.innerHTML = html; stage.appendChild(el);
+  tl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: fadeIn, ease: 'none' }, b(t0));
+  if (t1 != null) tl.to(el, { autoAlpha: 0, duration: fadeOut, ease: 'power1.in' }, b(t1) - fadeOut);
+  return el;
+}
+// Kinetic line: words rise in with blur, leave upward. *word* = accent.
+function kline(text, t0, t1, { y = 470, size = 132, stagger = .07, sec = false } = {}) {
+  const bb = sec ? (x) => x : b;
+  const el = document.createElement('div'); el.className = 'kline';
+  el.style.top = y + 'px'; el.style.fontSize = size + 'px';
+  el.innerHTML = text.split(' ').map(w => {
+    const m = w.match(/^\*(.+)\*$/);
+    return `<span class="w">${m ? `<span class="acc">${m[1]}</span>` : w}</span>`;
+  }).join(' ');
+  stage.appendChild(el);
+  const ws = $$('.w', el);
+  tl.set(el, { visibility: 'visible' }, bb(t0));
+  tl.fromTo(ws, { opacity: 0, y: size * .45, filter: 'blur(14px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: .9, stagger, ease: E }, bb(t0));
+  if (t1 != null) {
+    tl.to(ws, { opacity: 0, y: -size * .3, filter: 'blur(12px)', duration: .45, stagger: .03, ease: 'power2.in' }, bb(t1) - .5);
+    tl.set(el, { visibility: 'hidden' }, bb(t1));
+  }
+  return el;
+}
+// "*a b*" -> "*a* *b*"
+function A(s) { return s.replace(/\*([^*]+)\*/g, (_, g) => g.split(' ').map(w => `*${w}*`).join(' ')); }
+const scene = (bars) => MARKS.scenes.push(b(bars));
+
+/* ================= 0. OPEN [0,2) ================= */
+{
+  layer(0, 2, `
+    <div class="abs center" style="top:300px" id="o-mark">${mark(260, 'o-ecl')}</div>
+    <div class="abs center display" style="top:610px;font-size:118px" id="o-title">Monadow</div>
+    <div class="abs center" style="top:760px;font:500 34px Inter;color:var(--mute)" id="o-sub">Private payments on Monad</div>`, { fadeIn: .01 });
+  tl.fromTo('#o-mark', { opacity: 0, scale: .55 }, { opacity: 1, scale: 1, duration: 1.6, ease: E }, .2);
+  tl.fromTo('#o-ecl', { attr: { cx: 31, cy: 3 } }, { attr: { cx: 19.4, cy: 13.4 }, duration: 2.0, ease: 'power2.inOut' }, .3);
+  tl.fromTo('#o-mark', { y: 0 }, { y: -90, duration: 1.2, ease: 'power3.inOut' }, 1.7);
+  tl.fromTo('#o-title', { opacity: 0, y: 30, letterSpacing: '0.12em' }, { opacity: 1, y: -90, letterSpacing: '-0.035em', duration: 1.4, ease: E }, 2.0);
+  tl.fromTo('#o-sub', { opacity: 0, y: 10 }, { opacity: 1, y: -90, duration: 1, ease: E }, 2.6);
+}
+
+/* ================= 1. TEAM [2,4) ================= */
+scene(2);
+kline(A('Built solo by *Erhan Türker.*'), 2, 3.15, { size: 112 });
+kline(A('For *Monad Metropolis.*'), 3.15, 4, { size: 96, y: 480 });
+
+/* ================= 2. LANDING STORY (recorded scroll film) ================= */
+const STORY0 = 4 * B;
+const STORY = TL.story || { dur: 0 };
+const PROD0 = STORY0 + STORY.dur;
+const CLIPS = TL.clips || [];
+const PROD_DUR = CLIPS.reduce((s, c) => s + c.slot, 0);
+POST0 = PROD0 + PROD_DUR;
+scene(4); MARKS.story = STORY0; MARKS.solution = STORY0 + (STORY.passkey || 8); MARKS.boom = STORY0 + (STORY.trail || 4);
+const pad5 = (n) => String(n).padStart(5, '0');
+const media = [];   // {img, t0, t1, frameAt(t)}
+if (STORY.dur) {
+  const el = document.createElement('div'); el.className = 'layer'; stage.appendChild(el);
+  el.innerHTML = `<img id="story" style="position:absolute;inset:0;width:1920px;height:1080px">`;
+  tl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: .6, ease: 'none' }, STORY0 - .2);
+  tl.to(el, { autoAlpha: 0, duration: .5, ease: 'none' }, PROD0 - .3);
+  tl.fromTo('#story', { scale: 1.04 }, { scale: 1.0, duration: STORY.dur, ease: 'none' }, STORY0);
+  media.push({ img: $('#story', el), t0: STORY0 - .2, t1: PROD0 + .3, url: (t) => `${STORY.dir}/f${pad5(Math.min(STORY.last, Math.max(STORY.first, STORY.first + Math.round((t - STORY0) * 30))))}.jpg` });
+}
+
+/* ================= 3. LIVE APP CLIPS ================= */
+{
+  let t = PROD0;
+  CLIPS.forEach((c, i) => {
+    MARKS.scenes.push(t);
+    const wide = c.aspect > 2;
+    const H0 = wide ? 740 : 840, Wd = Math.round(H0 * c.aspect);
+    const Wf = Math.min(wide ? 1800 : 1500, Wd), Hf = Math.round(Wf / c.aspect);
+    const left = Math.round((1920 - Wf) / 2), top = 172 + Math.round((884 - Hf - 44) / 2);
+    const el = document.createElement('div'); el.className = 'layer'; stage.appendChild(el);
+    el.innerHTML = `<div class="clipframe" style="position:absolute;left:${left}px;top:${top}px;width:${Wf}px;border-radius:16px;overflow:hidden;border:1.5px solid rgba(131,110,249,.5);box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 90px rgba(131,110,249,.25);background:#0E0B16">
+      <div class="bar" style="height:44px;display:flex;align-items:center;gap:10px;padding:0 18px;background:#191427;border-bottom:1px solid rgba(131,110,249,.25)">
+        <i style="width:13px;height:13px;border-radius:50%;background:#3A3150"></i><i style="width:13px;height:13px;border-radius:50%;background:#3A3150"></i><i style="width:13px;height:13px;border-radius:50%;background:#3A3150"></i>
+        <div style="margin-left:18px;flex:1;max-width:560px;height:28px;border-radius:8px;background:#0E0B16;font:500 16px 'JetBrains Mono';color:var(--mute);display:flex;align-items:center;padding:0 14px">${c.url || 'erhantrk.github.io/monadow'}</div>
+        ${c.badge ? `<div style="margin-left:auto;font:600 16px 'JetBrains Mono';color:var(--mon2);letter-spacing:.12em">${c.badge}</div>` : ''}</div>
+      <img style="display:block;width:${Wf}px;height:${Hf}px"></div>`;
+    tl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: .45, ease: 'none' }, t - .1);
+    tl.to(el, { autoAlpha: 0, duration: .4, ease: 'none' }, t + c.slot - .35);
+    tl.fromTo($('.clipframe', el), { y: i ? 40 : 120, scale: i ? .97 : .9, opacity: i ? 1 : 0 }, { y: 0, scale: 1, opacity: 1, duration: 1.0, ease: E }, t);
+    tl.to($('.clipframe', el), { y: -8, scale: 1.015, duration: c.slot - 1, ease: 'none' }, t + 1);
+    const img = $('img', el), t0 = t;
+    if (c.frames) media.push({ img, t0: t - .1, t1: t + c.slot, url: (tt) => `${c.dir}/f${pad5(Math.min(c.last, Math.max(c.first, c.first + Math.round((tt - t0) * 30))))}.jpg` });
+    else { img.src = c.still; img.style.objectFit = 'cover'; img.style.objectPosition = '50% 0%'; }
+    kline(A(c.title), t, t + c.slot, { size: 64, y: 70, sec: true });
+    t += c.slot;
+  });
+}
+
+/* ================= 6. WHY MONAD [27.5,31.5) ================= */
+scene(27.5);
+kline(A('Why *Monad?*'), 27.5, 31.5, { size: 96, y: 150 });
+{
+  layer(27.5, 31.5, `
+  <div class="card mcard" style="left:140px" id="m-c1"><div class="big"><span class="acc">400</span>ms</div><div class="lbl">blocks</div><div class="sub">send, scan and withdraw feel instant</div><div class="blocks" id="m-blocks">${Array.from({ length: 9 }, () => '<div class="blk"></div>').join('')}</div></div>
+  <div class="card mcard" style="left:700px" id="m-c2"><div class="big" style="font-size:84px;white-space:nowrap">Cheap gas</div><div class="lbl">a fresh address for every payment</div><div class="dots" id="m-dots">${'<i></i>'.repeat(20)}</div></div>
+  <div class="card mcard" style="left:1260px" id="m-c3"><div class="big"><span class="acc">EVM</span></div><div class="lbl">standards apply as-is</div><div><span class="erc">ERC-5564</span><span class="erc">ERC-6538</span></div><div class="sub" style="margin-top:22px">stealth addresses + meta-address registry</div></div>`, { fadeIn: .01 });
+  ['#m-c1', '#m-c2', '#m-c3'].forEach((q, i) => tl.fromTo(q, { opacity: 0, y: 80, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: .9, ease: E }, b(28.0 + i * .7)));
+  const dotT = b(28.7);
+  window.__monadTick = (t) => {
+    if (t < b(27.5) || t > b(31.5)) return;
+    const ph = t / 0.4, f = ph % 1, n = Math.floor(ph);
+    $$('#m-blocks .blk').forEach((bk, i) => {
+      bk.style.left = ((i - f) * 62) + 'px'; const isNew = i === 8, k = (n + i) % 3;
+      bk.style.background = isNew ? `rgba(131,110,249,${.25 + .5 * (1 - f)})` : `rgba(131,110,249,${.08 + k * .05})`;
+      bk.style.boxShadow = isNew ? `0 0 ${20 * (1 - f)}px rgba(168,152,255,.9)` : 'none';
+    });
+    const lit = Math.max(0, Math.min(20, Math.floor((t - dotT) * 6)));
+    $$('#m-dots i').forEach((d, i) => { const on = i < lit; d.style.background = on ? 'rgba(131,110,249,.55)' : 'rgba(131,110,249,.10)'; d.style.boxShadow = on && i >= lit - 2 ? '0 0 16px #A898FF' : 'none'; });
+  };
+}
+
+/* ================= 7. TRACTION [31.5,34.5) ================= */
+scene(31.5);
+kline(A('*Live* on Monad testnet.'), 31.5, 34.5, { size: 112, y: 250 });
+{
+  const L = layer(31.5, 34.5, `
+    <div class="card tchip" style="left:150px"><div class="l">✓ CONTRACTS</div><div class="v">Verified on Sourcify</div><div class="s">chainId 10143</div></div>
+    <div class="card tchip" style="left:710px"><div class="l">✓ SHIPPED</div><div class="v">SDK on npm</div><div class="s">npm i monadow-sdk</div></div>
+    <div class="card tchip" style="left:1270px"><div class="l">✓ STANDARDS</div><div class="v">Stealth, by the book</div><div class="s">ERC-5564 · ERC-6538</div></div>`, { fadeIn: .01 });
+  tl.fromTo($$('.tchip', L), { opacity: 0, y: 60, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: .9, stagger: .45, ease: E }, b(31.5) + .7);
+}
+
+/* ================= 8. NEXT [34.5,37.5) ================= */
+scene(34.5);
+kline(A("What's *next.*"), 34.5, 37.5, { size: 112, y: 250 });
+{
+  const items = [['Gas sponsorship', 'withdraw with zero MON'], ['Mobile', 'passkeys live on phones'], ['Audit → mainnet', 'not audited yet'], ['SDK everywhere', 'inside other Monad wallets']];
+  const xs = [240, 720, 1200, 1680];
+  const L = layer(34.5, 37.5, `<div class="rail"><div class="railfill" id="r-fill"></div></div>
+    ${xs.map((x, i) => `<div class="rnode" style="left:${x}px"></div><div class="rlbl" style="left:${x}px"><div class="n">0${i + 1}</div><div class="t">${items[i][0]}</div><div class="s">${items[i][1]}</div></div>`).join('')}`, { fadeIn: .01 });
+  const step = b(2.0) / 3;
+  tl.fromTo('#r-fill', { scaleX: 0 }, { scaleX: 1, duration: b(2.0), ease: 'none' }, b(34.5) + .5);
+  $$('.rnode', L).forEach((n, i) => tl.fromTo(n, { scale: 0 }, { scale: 1, duration: .5, ease: 'back.out(2)' }, b(34.5) + .4 + i * step));
+  $$('.rlbl', L).forEach((n, i) => tl.fromTo(n, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .7, ease: E }, b(34.5) + .5 + i * step));
+}
+
+/* ================= 9. CTA [37.5,41.5) ================= */
+scene(37.5); MARKS.cta = b(37.5);
+const TOTAL = b(41.5);
+{
+  layer(37.5, null, `
+  <div class="abs center" style="top:110px" id="c-mark">${mark(190, 'c-ecl')}</div>
+  <div class="abs center display" style="top:330px;font-size:124px" id="c-title">Monadow</div>
+  <div class="abs center display" style="top:470px;font-size:80px;font-weight:600" id="c-tag">Get paid, <span class="acc">not tracked.</span></div>
+  <div class="abs center" style="top:600px"><span class="badge" id="c-badge"><i></i>Live on Monad testnet</span></div>
+  <div class="card links" id="c-links">
+    <div><span>TRY IT</span>erhantrk.github.io/monadow</div>
+    <div><span>CODE</span>github.com/erhantrk/monadow</div>
+    <div><span>SDK</span>npm i monadow-sdk</div></div>`, { fadeIn: .01 });
+  const t0 = b(37.5);
+  tl.fromTo('#c-mark', { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: 1.2, ease: E }, t0);
+  tl.fromTo('#c-ecl', { attr: { cx: 31, cy: 3 } }, { attr: { cx: 19.4, cy: 13.4 }, duration: 1.6, ease: 'power2.inOut' }, t0);
+  tl.fromTo('#c-title', { opacity: 0, y: 30, letterSpacing: '0.12em' }, { opacity: 1, y: 0, letterSpacing: '-0.035em', duration: 1.2, ease: E }, t0 + .3);
+  tl.fromTo('#c-tag', { opacity: 0, y: 30, filter: 'blur(12px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1, ease: E }, t0 + 1.1);
+  tl.fromTo('#c-badge', { opacity: 0 }, { opacity: 1, duration: .6 }, t0 + 1.8);
+  tl.fromTo('#c-links', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .9, ease: E }, t0 + 2.3);
+  tl.fromTo('#c-links div', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: .5, stagger: .2, ease: E }, t0 + 2.5);
+}
+tl.fromTo('#fade', { opacity: 1 }, { opacity: 0, duration: .5, ease: 'none' }, 0);
+tl.to('#fade', { opacity: 1, duration: 1.2, ease: 'none' }, TOTAL - 1.2);
+
+/* ================= background ================= */
+const cv = document.getElementById('bg'), g = cv.getContext('2d');
+function rnd(i) { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+const P = Array.from({ length: 110 }, (_, i) => ({ x: rnd(i) * W, y: rnd(i + 500) * H, vx: (rnd(i + 900) - .5) * 14, vy: -6 - rnd(i + 1300) * 16, r: .8 + rnd(i + 1700) * 2.2, ph: rnd(i + 2100) * 6.28 }));
+const HR = 46, HW = Math.sqrt(3) * HR;
+const pulseAt = (t) => { let v = 0; for (const k of MARKS.scenes) { const d = t - k; if (d >= 0 && d < 2) v = Math.max(v, Math.exp(-d * 2.2)); } return v; };
+function drawBG(t) {
+  g.fillStyle = '#0E0B16'; g.fillRect(0, 0, W, H);
+  const gx = 960 + Math.sin(t * .11) * 420, gy = 460 + Math.cos(t * .09) * 160;
+  let rg = g.createRadialGradient(gx, gy, 0, gx, gy, 900);
+  rg.addColorStop(0, 'rgba(131,110,249,0.15)'); rg.addColorStop(.5, 'rgba(131,110,249,0.045)'); rg.addColorStop(1, 'rgba(131,110,249,0)');
+  g.fillStyle = rg; g.fillRect(0, 0, W, H);
+  const hx = 1650 - Math.sin(t * .07) * 300, hy = 950;
+  rg = g.createRadialGradient(hx, hy, 0, hx, hy, 700);
+  rg.addColorStop(0, 'rgba(90,60,200,0.11)'); rg.addColorStop(1, 'rgba(90,60,200,0)');
+  g.fillStyle = rg; g.fillRect(0, 0, W, H);
+  const pk = pulseAt(t);
+  const ox = (t * 6) % HW, oy = (t * 3) % (HR * 3);
+  g.lineWidth = 1.2;
+  for (let row = -2; row < H / (HR * 1.5) + 2; row++) {
+    for (let col = -2; col < W / HW + 2; col++) {
+      const cx = col * HW + (row & 1 ? HW / 2 : 0) - ox, cy = row * HR * 1.5 - oy;
+      const d = Math.hypot(cx - 960, cy - 540), dg = Math.hypot(cx - gx, cy - gy);
+      const wave = Math.max(0, Math.sin(dg / 140 - t * 1.4));
+      const ring = pk * Math.exp(-Math.pow((d - (1 - pk) * 1400) / 120, 2));
+      const a = .03 + .045 * Math.max(0, 1 - dg / 900) + .045 * Math.pow(wave, 8) * Math.max(0, 1 - dg / 1100) + .12 * ring;
+      g.strokeStyle = `rgba(131,110,249,${a.toFixed(3)})`;
+      g.beginPath();
+      for (let k = 0; k < 6; k++) { const an = Math.PI / 180 * (60 * k - 30); const px = cx + HR * Math.cos(an), py = cy + HR * Math.sin(an); k ? g.lineTo(px, py) : g.moveTo(px, py); }
+      g.closePath(); g.stroke();
+    }
+  }
+  for (const p of P) {
+    const x = ((p.x + p.vx * t) % W + W) % W, y = ((p.y + p.vy * t) % H + H) % H;
+    const a = .22 + .32 * (.5 + .5 * Math.sin(t * 1.3 + p.ph));
+    g.fillStyle = `rgba(201,191,255,${a.toFixed(3)})`;
+    g.beginPath(); g.arc(x, y, p.r, 0, 6.283); g.fill();
+  }
+}
+
+window.seek = async (t) => {
+  const waits = [];
+  for (const m of media) {
+    if (t < m.t0 || t > m.t1) continue;
+    const u = m.url(t);
+    if (m.img.dataset.u !== u) { m.img.dataset.u = u; m.img.src = u; waits.push(m.img.decode().catch(() => {})); }
+  }
+  await Promise.all(waits);
+  tl.seek(t, false);
+  drawBG(t);
+    window.__monadTick && window.__monadTick(t);
+};
+window.__TOTAL = TOTAL;
+window.__MARKS = { ...MARKS, bar: B, total: TOTAL };
+window.__ready = true;
+</script>
+</body>
+</html>
