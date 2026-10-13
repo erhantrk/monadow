@@ -258,6 +258,8 @@ Monadow is a port and redesign of **[Shade](https://github.com/stellarshade-labs
 
 **Dropped:** Shade's Stellar-specific shielded pool, relayer and indexer. On an EVM chain, payments can go straight to a one-time stealth EOA, so none of those are needed. No Stellar or Freighter code is included.
 
+**Animation components:** the motion system in `apps/web/src/motion/` (ledger drift, wordmark rise, lens grain, scroll reveals, view-key scan sweep, severance burst, count-ups) was adapted from [stellarshade-labs/Web](https://github.com/stellarshade-labs/Web), the pre-existing Shade website by the same author, and re-skinned for Monadow.
+
 **New for the hackathon:** all Monad contracts (`Monadow`, `MonadowRegistry`, `MockUSD`), the secp256k1 / ERC-5564 SDK (`monadow-sdk`), the Mera integration, and the Monadow web app.
 
 ## Attribution
