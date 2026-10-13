@@ -3,7 +3,7 @@
 **Private stealth payments on Monad. One passkey is your entire account: wallet, stealth keys and vault key, with no seed phrase and no extension.**
 
 - Live app: https://erhantrk.github.io/monadow/
-- SDK on npm: [`monadow-sdk`](https://www.npmjs.com/package/monadow-sdk) <!-- VERIFY: package published to npm under this name -->
+- SDK on npm: [`monadow-sdk`](https://www.npmjs.com/package/monadow-sdk)
 - Demo video: TBD
 - Network: Monad testnet (chainId 10143)
 - Built for the Monad Metropolis hackathon (solo: Erhan Türker)
@@ -97,7 +97,29 @@ Example transactions (from `contracts/deployments/10143.json`):
 | `approve` mUSD | [`0x3d181c78…849d1`](https://testnet.monadvision.com/tx/0x3d181c780141009bdcbad0ee4d7a2020e7f22358958d87eeeb8fee00769849d1) |
 | `sendToken` (10 mUSD + MON gas tip to a stealth address) | [`0x652740c8…56c3224a6a57a`](https://testnet.monadvision.com/tx/0x652740c890685e57fb8d7dd9daa2de29f8c3b616b2ff48cd5e056c3224a6a57a) |
 
-<!-- VERIFY: add an end-to-end withdraw tx hash (from packages/sdk/scripts/e2e.ts or the live app) once one is recorded -->
+### End-to-end proof
+
+**Real passkey, live site.** Touch ID in Safari on https://erhantrk.github.io/monadow/ created the passkey. Mera then ran the signing session, and the user's account `0x70d14eb965e3cf0cfd1889873fe44fc2bbafb0c2` did the rest:
+
+| What | Tx hash |
+|---|---|
+| Publish meta-address (signed via Mera session, no extra prompt) | [`0xc88e3b22…6f393f33`](https://testnet.monadvision.com/tx/0xc88e3b2238022d4d709f21aea3e8462f3da1c4a5307b391e9bcc1bff6f393f33) |
+| Private payment of 0.05 MON to that 0x address (lands at one-time `0x6cE6A1f6…3f5Ff6183`) | [`0x1e34caf0…688c1f4e`](https://testnet.monadvision.com/tx/0x1e34caf0c5f9876ca05529d1d47ffd422b50250415b78d9e460ef938688c1f4e) |
+| Private payment of 250 mUSD plus gas tip (lands at one-time `0x31812790…bDA84b98e0`) | [`0x98c98674…09b20f98`](https://testnet.monadvision.com/tx/0x98c98674768525a2aebbd115b6633475ece654506170dc39400dd04009b20f98) |
+
+The user then scanned the Inbox in the live app and withdrew both payments to their account, with no prompts.
+
+**SDK e2e** (`packages/sdk/scripts/e2e.ts`): register, send MON and mUSD, scan, then withdraw.
+
+| What | Tx hash |
+|---|---|
+| `registerKeys` | [`0xd6331552…a1f9af15`](https://testnet.monadvision.com/tx/0xd633155278ed52a8e5561c1f3741473c3b216b1fe34fad85f6c92c91a1f9af15) |
+| `sendNative` 0.01 MON | [`0x12bd3bcd…6dbbf83f`](https://testnet.monadvision.com/tx/0x12bd3bcd269c792c9eb0575dab2adc7a10e7a41ed76cacf83bddb5df6dbbf83f) |
+| `sendToken` 5 mUSD + tip | [`0x2f2e4e5c…85bd15fe`](https://testnet.monadvision.com/tx/0x2f2e4e5c5b8c7c08bbe92b805820c899c096c0bc5f3a21b2b9e6665185bd15fe) |
+| Withdraw MON from the stealth address (Mera signing session) | [`0x6b5bfc04…87547b23`](https://testnet.monadvision.com/tx/0x6b5bfc04b6db849cb36687c25fc4cf46554491a60d0e9255d71bac2f87547b23) |
+| Withdraw mUSD from the stealth address | [`0x3f1d570e…b206c02d`](https://testnet.monadvision.com/tx/0x3f1d570e28b186860d564022f6497238bea2300d591379efb4d33bd3b206c02d) |
+| Sweep the leftover gas tip | [`0xe797d40b…585c74d2`](https://testnet.monadvision.com/tx/0xe797d40b08f5425e2c9c5a7e352440017e94bad538bb4d4878016cc1585c74d2) |
+
 
 ## Mera integration: Mera is the entire account layer
 
