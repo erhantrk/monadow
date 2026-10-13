@@ -176,6 +176,48 @@ export function Landing({ redirectTo = '/home' }: { redirectTo?: string }) {
         busy={busy === 'get'}
         disabled={!available || busy !== null}
       />
+
+      <section className="relative mx-auto flex max-w-2xl flex-col items-center px-4 pb-24 pt-8 text-center">
+        <MonadowMark animate className="mb-6 size-12 text-mon-500 drop-shadow-[0_0_24px_rgb(131_110_249/0.5)]" />
+        <h2 className="text-3xl font-semibold tracking-tight text-ink-50 sm:text-4xl">Ready to get paid privately?</h2>
+        <p className="mt-3 text-[15px] text-ink-300">One passkey prompt. No seed phrase, no extension.</p>
+        <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:flex-row">
+          <Button
+            variant="primary"
+            size="lg"
+            className={`w-full sm:flex-1 ${busy === 'get' ? 'animate-m-halo' : ''}`}
+            loading={busy === 'get'}
+            disabled={!available || busy !== null}
+            icon={<Fingerprint className="size-5" />}
+            onClick={() => void run('get')}
+          >
+            {busy === 'get' ? 'Waiting for passkey…' : 'Continue with passkey'}
+          </Button>
+          <Button
+            size="lg"
+            className="w-full sm:w-auto"
+            loading={busy === 'create'}
+            disabled={!available || busy !== null}
+            icon={<Plus className="size-4" />}
+            onClick={() => void run('create')}
+          >
+            Create new passkey
+          </Button>
+        </div>
+        {error && (
+          <div className="mt-4 w-full max-w-md text-left">
+            <Notice tone={error.kind === 'prf' ? 'bad' : 'warn'}>{error.message}</Notice>
+          </div>
+        )}
+        <a
+          href="https://mera.category.xyz"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-6 text-[12px] text-ink-500 hover:text-mon-300"
+        >
+          Built on Monad · Powered by Mera ↗
+        </a>
+      </section>
     </div>
   );
 }
