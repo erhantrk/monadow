@@ -1,0 +1,10 @@
+{
+  "name": "monadow",
+  "private": true,
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "build:sdk": "npm run build -w monadow-sdk",
+    "dev": "npm run dev -w @monadow/web",
+    "build:web": "npm run build -w @monadow/web"
+  }
+}

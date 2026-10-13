@@ -1,0 +1,8 @@
+.env
+node_modules
+dist
+out
+cache
+broadcast/*/31337
+.DS_Store
+*.log
