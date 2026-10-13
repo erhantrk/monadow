@@ -82,5 +82,15 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erhantrk/monadow.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://erhantrk.github.io/monadow/",
+  "bugs": {
+    "url": "https://github.com/erhantrk/monadow/issues"
+  },
+  "author": "Erhan Türker"
 }
